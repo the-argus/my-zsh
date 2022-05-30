@@ -175,6 +175,14 @@ function _python_module () {
     echo $module
 }
 
+function _nix_module () {
+    # display packages in use currently, and whether or not we're in a shell
+    if [ -z $IN_NIX_SHELL ]; then
+        return
+    fi
+    echo "NIX"
+}
+
 function _start_module () {
     echo "${MOD_SEP_STYLE}${PROMPT_START}${REGULAR}"
 }
@@ -227,4 +235,4 @@ function _time_module() {
 precmd_functions+=(_command_time_precmd)
 preexec_functions+=(_command_time_preexec)
 
-prompt='$(_start_module)$(_main_module)$(_git_module)$(_python_module)$(_time_module)'$'\n''$(_newline_module)'
+prompt='$(_start_module)$(_nix_module)$(_main_module)$(_git_module)$(_python_module)$(_time_module)'$'\n''$(_newline_module)'
