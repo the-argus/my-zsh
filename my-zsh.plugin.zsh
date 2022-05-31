@@ -176,11 +176,38 @@ function _python_module () {
 }
 
 function _nix_module () {
-    # display packages in use currently, and whether or not we're in a shell
-    if [ -z $IN_NIX_SHELL ]; then
-        return
+    echo "nix maybe"
+    
+    # Checks if shell is nix,
+    [[ -z $IN_NIX_SHELL ]] && return   fi
+    
+    # If initialized with `nix-shell -p [packages]`
+    if [[ -n $NIX_SHELL_PACKAGES ]]; then
+        local packageNames=""
+        local packages=($NIX_SHELL_PACKAGES)
+
+        # Get all active packages
+        for package in $packages; do
+              packageNames+="${package}"
+        done
+
+            # format output and set prefix
+        output="$packageNames"
+        prefix=" "
+
+      # Else, get name property from default.nix stdenvironment
+    else
+        local cleanName=${name#interactive-}
+        cleanName=${cleanName%-environment}
+
+        # format output and set prefix
+        output="$cleanName"
+        prefix=" "
     fi
-    echo "NIX"
+
+    echo "$prefix" \
+        "$output" \
+        " "
 }
 
 function _start_module () {
