@@ -14,6 +14,7 @@ HOST_STYLE="$COL4"
 DIR_STYLE="$COL5"
 GIT_STYLE="$COL4"
 PYTHON_STYLE="$COL3"
+NIX_STYLE="$BOLD$COL5"
 TIME_STYLE="$COL2"
 MOD_SEP_STYLE="$BOLD$COL1"
 USER_HOST_SEP_STYLE="$BOLD$COL1"
@@ -40,6 +41,9 @@ PYTHON_MODULE_SEPARATOR_END="$MODULE_SEPARATOR_END"
 
 TIME_MODULE_SEPARATOR_START="${MODULE_SEPARATOR_START}"
 TIME_MODULE_SEPARATOR_END="$MODULE_SEPARATOR_END"
+
+NIX_MODULE_SEPARATOR_START="${MODULE_SEPARATOR_START}nixshell "
+NIX_MODULE_SEPARATOR_END="${MODULE_SEPARATOR_END}"
 
 # SETTINGS --------------
 PROMPT_SHOW_GIT=true
@@ -176,38 +180,16 @@ function _python_module () {
 }
 
 function _nix_module () {
-    echo "nix maybe"
-    
     # Checks if shell is nix,
-    [[ -z $IN_NIX_SHELL ]] && return   fi
+    [[ -z $IN_NIX_SHELL ]] && return
     
-    # If initialized with `nix-shell -p [packages]`
-    if [[ -n $NIX_SHELL_PACKAGES ]]; then
-        local packageNames=""
-        local packages=($NIX_SHELL_PACKAGES)
+    local cleanName=${name#interactive-}
+    cleanName=${cleanName%-environment}
 
-        # Get all active packages
-        for package in $packages; do
-              packageNames+="${package}"
-        done
-
-            # format output and set prefix
-        output="$packageNames"
-        prefix=" "
-
-      # Else, get name property from default.nix stdenvironment
-    else
-        local cleanName=${name#interactive-}
-        cleanName=${cleanName%-environment}
-
-        # format output and set prefix
-        output="$cleanName"
-        prefix=" "
-    fi
-
-    echo "$prefix" \
-        "$output" \
-        " "
+    local module="${MOD_SEP_STYLE}${NIX_MODULE_SEPARATOR_START}${REGULAR}"
+    module="${module}${NIX_STYLE}${cleanName}${REGULAR}"
+    module="${module}${MOD_SEP_STYLE}${NIX_MODULE_SEPARATOR_END}${REGULAR}"
+    echo $module
 }
 
 function _start_module () {
